@@ -53,6 +53,30 @@ class EC:
                     0x483ADA7726A3C4655DA4FBFC0E1108A8FD17B448A68554199C47D08FFB10D4B8
                 )
             )
+        elif curve == "secp192k1":
+            return dict(
+                p=2**192 - 2**32 - 2**12 - 2**8 - 2**7 - 2**6 - 2**3 - 1,
+                a=0,
+                b=3,
+                n=0xFFFFFFFFFFFFFFFFFFFFFFFE26F2FC170F69466A74DEFD8D,
+                h=1,
+                base_point=(
+                    0xDB4FF10EC057E9AE26B07D0280B7F4341DA5D1B1EAE06C7D,
+                    0x9B2F2F6D9C5628A7844163D015BE86344082AA88D95E2F9D
+                )
+            )
+        elif curve == "secp224k1":
+            return dict(
+                p=2**224 - 2**32 - 2**12 - 2**11 - 2**9 - 2**7 - 2**4 - 2 - 1,
+                a=0,
+                b=5,
+                n=0x010000000000000000000000000001DCE8D2EC6184CAF0A971769FB1F7,
+                h=1,
+                base_point=(
+                    0xA1455B334DF099DF30FC28A169A467E9E47075A90F7E650EB6B7A45C,
+                    0x7E089FED7FBA344282CAFBD6F7E319F7C0B0BD59E2CA4BDB556D61A5
+                )
+            )
         else:
             raise Exception(f"curve {curve} is not supported")
 
