@@ -3,6 +3,6 @@ def modinv(a, n):
     low, high = a % n, n
     while low > 1:
         ratio = high // low
-        nm, new = hm-lm*ratio, high-low*ratio
+        nm, new = hm - lm * ratio, high - low * ratio
         lm, low, hm, high = nm, new, lm, low
     return lm % n

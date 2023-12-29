@@ -5,7 +5,9 @@ from utils import modinv
 
 
 class EC:
-    def __init__(self, p: int, a: int, b: int, n: int, h: int, base_point: tuple[int, int]):
+    def __init__(
+        self, p: int, a: int, b: int, n: int, h: int, base_point: tuple[int, int]
+    ):
         self.p = p
         self.a = a
         self.b = b
@@ -14,15 +16,15 @@ class EC:
         self.base_point = base_point
 
     def point_add(self, p: tuple[int, int], q: tuple[int, int]) -> tuple[int, int]:
-        x1,  y1 = p
-        x2,  y2 = q
+        x1, y1 = p
+        x2, y2 = q
 
         if x1 == x2:
-            g = ((3 * x1 ** 2 + self.a) * modinv((2 * y1), self.p))
+            g = (3 * x1**2 + self.a) * modinv((2 * y1), self.p)
         else:
-            g = ((y2 - y1) * modinv(x2 - x1, self.p))
+            g = (y2 - y1) * modinv(x2 - x1, self.p)
 
-        x3 = (g ** 2 - x1 - x2) % self.p
+        x3 = (g**2 - x1 - x2) % self.p
         y3 = ((g * (x1 - x3)) - y1) % self.p
 
         return (x3, y3)
@@ -50,8 +52,8 @@ class EC:
                 h=1,
                 base_point=(
                     0x79BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798,
-                    0x483ADA7726A3C4655DA4FBFC0E1108A8FD17B448A68554199C47D08FFB10D4B8
-                )
+                    0x483ADA7726A3C4655DA4FBFC0E1108A8FD17B448A68554199C47D08FFB10D4B8,
+                ),
             )
         elif curve == "secp192k1":
             return dict(
@@ -62,8 +64,8 @@ class EC:
                 h=1,
                 base_point=(
                     0xDB4FF10EC057E9AE26B07D0280B7F4341DA5D1B1EAE06C7D,
-                    0x9B2F2F6D9C5628A7844163D015BE86344082AA88D95E2F9D
-                )
+                    0x9B2F2F6D9C5628A7844163D015BE86344082AA88D95E2F9D,
+                ),
             )
         elif curve == "secp224k1":
             return dict(
@@ -74,8 +76,8 @@ class EC:
                 h=1,
                 base_point=(
                     0xA1455B334DF099DF30FC28A169A467E9E47075A90F7E650EB6B7A45C,
-                    0x7E089FED7FBA344282CAFBD6F7E319F7C0B0BD59E2CA4BDB556D61A5
-                )
+                    0x7E089FED7FBA344282CAFBD6F7E319F7C0B0BD59E2CA4BDB556D61A5,
+                ),
             )
         else:
             raise Exception(f"curve {curve} is not supported")
@@ -84,8 +86,15 @@ class EC:
 class ECDSA(EC):
     def __init__(self, curve: str):
         curve = EC.get_curve_params(curve)
-        EC.__init__(self, p=curve["p"], a=curve["a"], b=curve["b"],
-                    n=curve["n"], h=curve["h"], base_point=curve["base_point"])
+        EC.__init__(
+            self,
+            p=curve["p"],
+            a=curve["a"],
+            b=curve["b"],
+            n=curve["n"],
+            h=curve["h"],
+            base_point=curve["base_point"],
+        )
 
     def create_random_keypair(self):
         private_key = random.randrange(1, self.n)
@@ -97,7 +106,7 @@ class ECDSA(EC):
         bit_len = message_hash.__len__()
 
         if bit_len > self.n:
-            message_hash = message_hash[bit_len - n_bit_len:]
+            message_hash = message_hash[bit_len - n_bit_len :]
 
         z = int.from_bytes(message_hash)
 
@@ -113,13 +122,17 @@ class ECDSA(EC):
 
         return (r, s)
 
-    def verify_signature(self, signature: tuple[int, int], message_hash: bytes, verifying_key: int) -> bool:
+    def verify_signature(
+        self, signature: tuple[int, int], message_hash: bytes, verifying_key: int
+    ) -> bool:
         z = int.from_bytes(message_hash)
         u1 = (z * modinv(signature[1], self.n)) % self.n
         u2 = (signature[0] * modinv(signature[1], self.n)) % self.n
 
-        p = self.point_add(self.scalar_multiply(self.base_point, u1),
-                           self.scalar_multiply(verifying_key, u2))
+        p = self.point_add(
+            self.scalar_multiply(self.base_point, u1),
+            self.scalar_multiply(verifying_key, u2),
+        )
 
         if signature[0] == (p[0] % self.n):
             return True
