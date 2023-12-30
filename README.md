@@ -1,1 +1,1 @@
-A little repo for me to learn about cryptography (plus python). 
+A little repo for me to learn about some cryptography stuff (plus python lol). 
